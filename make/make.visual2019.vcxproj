@@ -155,9 +155,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\source\inc\Game.h" />
     <ClInclude Include="..\source\inc\inc.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\source\src\Game.cpp" />
     <ClCompile Include="..\source\src\main.cpp" />
   </ItemGroup>
   <ItemGroup>

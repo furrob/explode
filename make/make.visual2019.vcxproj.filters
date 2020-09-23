@@ -22,9 +22,15 @@
     <ClInclude Include="..\source\inc\inc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\inc\Game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\src\Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
