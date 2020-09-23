@@ -1,4 +1,5 @@
 #include "inc.h"
+#include <Shader.h>
 
 BOOL Create(HWND* hWnd, LPCWSTR ClassName, PCWSTR lpWindowName, DWORD dwStyle, DWORD dwExStyle = 0,
   int x = CW_USEDEFAULT, int y = CW_USEDEFAULT, int nWidth = CW_USEDEFAULT, int nHeight = CW_USEDEFAULT,
@@ -10,7 +11,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 {
   HWND hWnd;
 
-
+  //GLint64 timer;
+  //glGetInteger64v(GL_TIMESTAMP, &timer);
+  //printf("Miliseconds %f\n", timer / 1000000.0);
+  
   if(!Create(&hWnd, L"GameWindow", L"eXplode", WS_OVERLAPPEDWINDOW))
     return 0;
 
@@ -19,6 +23,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     MessageBoxW(NULL, L"Cannot initialize glew library", L"Error", MB_OK | MB_ICONERROR);
     return 0;
   }
+  Shader testShader = Shader("../../source/shaders/vertex.glsl", "../../source/shaders/fragment.glsl");//kompiluje
 
   ShowWindow(hWnd, iCmdShow);
 
