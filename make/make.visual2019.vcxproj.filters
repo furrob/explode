@@ -23,6 +23,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\source\inc\Shader.h">
+    <ClInclude Include="..\source\inc\Game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -31,6 +32,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\source\src\Shader.cpp">
+    <ClCompile Include="..\source\src\Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

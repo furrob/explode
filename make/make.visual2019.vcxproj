@@ -155,10 +155,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\source\inc\Game.h" />
     <ClInclude Include="..\source\inc\inc.h" />
     <ClInclude Include="..\source\inc\Shader.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\source\src\Game.cpp" />
     <ClCompile Include="..\source\src\main.cpp" />
     <ClCompile Include="..\source\src\Shader.cpp" />
   </ItemGroup>
