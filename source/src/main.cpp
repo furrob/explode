@@ -1,4 +1,5 @@
 #include "inc.h"
+#include <Shader.h>
 
 #include "Game.h"
 
@@ -14,6 +15,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 {
   HWND hWnd; //window handle
 
+  if(!Create(&hWnd, L"GameWindow", L"eXplode", WS_OVERLAPPEDWINDOW))
   Game game;
 
   if(!Create(&hWnd,L"GameWindow", L"eXplode", WS_POPUP | WS_VISIBLE))//WS_OVERLAPPEDWINDOW))
