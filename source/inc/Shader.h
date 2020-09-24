@@ -1,7 +1,8 @@
 #pragma once
-#include "glew.h"
+#include <GL/glew.h>
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -10,12 +11,20 @@
 
 class Shader
 {
+  GLuint ID;
+
 public:
-  unsigned int ID;
-  Shader(const char* vertexPath,const char* fragmentPath);
- 
+  
+  Shader(const char* vertex_path,const char* fragment_path);
+
+  ~Shader();
 
   void use() { glUseProgram(ID); }
+
+  GLuint getID() const
+  {
+    return ID;
+  }
 
   void setUniform(const std::string& name, bool value) const
   {

@@ -79,6 +79,8 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(ProjectDir)..\bin\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)..\bin\$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)..\..\LIBS\glm;$(SolutionDir)..\..\LIBS\glew-2.1.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\..\LIBS\glew-2.1.0\lib\Release\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -89,6 +91,8 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(ProjectDir)..\bin\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)..\bin\$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)..\..\LIBS\glm;$(SolutionDir)..\..\LIBS\glew-2.1.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\..\LIBS\glew-2.1.0\lib\Release\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -96,7 +100,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\..\LIBS\glew-2.1.0\include\GL;$(SolutionDir)..\..\LIBS\glm;$(ProjectDir)..\source\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -110,7 +114,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\..\LIBS\glew-2.1.0\include\GL;$(SolutionDir)..\..\LIBS\glm;$(ProjectDir)..\source\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -126,7 +130,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\..\LIBS\glew-2.1.0\include\GL;$(SolutionDir)..\..\LIBS\glm;$(ProjectDir)..\source\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -144,7 +148,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\..\LIBS\glew-2.1.0\include\GL;$(SolutionDir)..\..\LIBS\glm;$(ProjectDir)..\source\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\source\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -157,11 +161,18 @@
   <ItemGroup>
     <ClInclude Include="..\source\inc\Game.h" />
     <ClInclude Include="..\source\inc\inc.h" />
+    <ClInclude Include="..\source\inc\Mesh.h" />
+    <ClInclude Include="..\source\inc\OBJLoader.h" />
+    <ClInclude Include="..\source\inc\Paddle.h" />
     <ClInclude Include="..\source\inc\Shader.h" />
+    <ClInclude Include="..\source\inc\vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\src\Game.cpp" />
     <ClCompile Include="..\source\src\main.cpp" />
+    <ClCompile Include="..\source\src\Mesh.cpp" />
+    <ClCompile Include="..\source\src\OBJLoader.cpp" />
+    <ClCompile Include="..\source\src\Paddle.cpp" />
     <ClCompile Include="..\source\src\Shader.cpp" />
   </ItemGroup>
   <ItemGroup>

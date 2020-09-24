@@ -1,5 +1,4 @@
 #include "inc.h"
-#include <Shader.h>
 
 #include "Game.h"
 
@@ -15,9 +14,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 {
   HWND hWnd; //window handle
 
-  if(!Create(&hWnd, L"GameWindow", L"eXplode", WS_OVERLAPPEDWINDOW))
-  Game game;
-
   if(!Create(&hWnd,L"GameWindow", L"eXplode", WS_POPUP | WS_VISIBLE))//WS_OVERLAPPEDWINDOW))
     return 0;
   
@@ -31,6 +27,18 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
   HDC hDC = GetDC(hWnd); //device context
   HGLRC hRC = wglGetCurrentContext(); //rendering context
+
+  //game object creation
+  RECT rc;
+  GetClientRect(hWnd, &rc);
+  Game game(rc.right - rc.left, rc.bottom - rc.top, hDC);
+
+  SendMessageW(hWnd, WM_USER, NULL, (LPARAM)&game);
+
+  ///ClipCursor(&rc); //TODO this
+
+  //OpenGL options?
+  glEnable(GL_DEPTH_TEST);
 
   MSG msg = {};
 
@@ -70,18 +78,24 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
       elapsedTicks.QuadPart = actualTime.QuadPart - lastTime.QuadPart;
 
       elapsedTime = ((elapsedTicks.QuadPart * 1000000.0) / counterFreq.QuadPart) / 1000000.0;
+
+      //1 - update everything somehow linked to physics
+      //game.Update(elapsedTime);
+      //every input will be processed in different functions, called from window proc
+      //
+      //2 - 
+
       //------------------
-
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-      glClearColor(1.0f, 0.25f, 0.25f, 0.0f);
-
-      SwapBuffers(hDC);
+      
+      game.RenderScene(); //teœcik
+      
       //--------------------
       lastTime.QuadPart = actualTime.QuadPart;
 
     }
   }
+
+  DestroyWindow(hWnd);
 
   //cleaning
   if(hRC)
@@ -101,24 +115,35 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 INT_PTR CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+  static Game* game = nullptr;
+
   switch(uMsg)
   {
-    case WM_CREATE:
+    case WM_USER:
     {
-
+      game = reinterpret_cast<Game*>(lParam);
+      return TRUE;
     }
     case WM_KEYDOWN:
     {
-      if(wParam == VK_ESCAPE) //change to something with fullscreen
+      switch(wParam)
       {
-        DestroyWindow(hWnd);
-        PostQuitMessage(0);
+        case VK_ESCAPE:
+        {
+          PostQuitMessage(0);
+          return TRUE;
+        }
+        case VK_F4:
+        {
+          //just test lol
+          return TRUE;
+        }
       }
       return TRUE;
     }
     case WM_CLOSE:
     {
-      DestroyWindow(hWnd);
+      
       PostQuitMessage(0);
 
       return TRUE;
