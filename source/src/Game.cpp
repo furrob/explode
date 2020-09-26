@@ -3,6 +3,7 @@
 
 Game::Game(int width, int height, HDC hDC) : shader_("../../source/shaders/vertex.glsl", "../../source/shaders/fragment.glsl")
 {
+  
   hDC_ = hDC;
 
   shader_.use();
@@ -31,6 +32,7 @@ void Game::Initialize()
 {
   //ALL PATHS DEFINED HERE, maybe pull it somewhere else later idk
   paddle_ = new Paddle("./models/handPaddle.obj", "./textures/test.png");
+  sound = SM.addSound("sounds/sweethome.raw");
 }
 
 void Game::OnMouseMove(int _x, int _y)
@@ -53,7 +55,10 @@ void Game::OnMouseMove(int _x, int _y)
 void Game::Update(double elapsed_time)
 {
   //TEST
-
+  if((GetAsyncKeyState(VK_F2)&0x8000)!=0)
+  {
+    SM.playSound(sound);
+  }
   
   //TEST
 }

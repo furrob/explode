@@ -19,6 +19,7 @@ void Paddle::LoadTexture(const char* texturePath)
 
   if(image)
   {
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image_width, image_height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
     glGenerateMipmap(GL_TEXTURE_2D);
   }
