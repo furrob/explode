@@ -155,7 +155,8 @@ INT_PTR CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
       int x_pos = GET_X_LPARAM(lParam);
       int y_pos = GET_Y_LPARAM(lParam);
 
-      game->OnMouseMove(x_pos, y_pos);
+      if(game != nullptr)
+        game->OnMouseMove(x_pos, y_pos);
 
       return TRUE;
     }
