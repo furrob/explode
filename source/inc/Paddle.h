@@ -4,33 +4,37 @@
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
 
+#include <Windows.h>
+
+#include "stb_image.h"
+
 #include "vertex.h"
 #include "Shader.h"
+#include "Mesh.h"
+#include "OBJLoader.h"
 
 class Paddle
 {
 private:
-  //Vertex Array Buffer (big box)
-  GLuint vao_;
-
-  //Vetrex Buffer Object
-  GLuint vbo_;
-
-  //Element Buffer Array
-  GLuint ebo_;
-
-  //number of elements in indices array
-  GLuint indices_count_;
-
   glm::mat4 model_matrix_;
 
   glm::vec3 position_; //position of this thing
 
+  Mesh mesh_;
+
+  GLuint texture_main_;
+
+  void LoadTexture(const char* texturePath);
+
 public:
-  Paddle();
+  
+
+  Paddle(const char* meshPath, const char* texturePath);
+
+  ~Paddle();
 
   void Draw(Shader* shader);
 
-  ~Paddle();
+  void set_position(glm::vec3 pos);
 };
 

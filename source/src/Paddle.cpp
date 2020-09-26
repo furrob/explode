@@ -1,78 +1,76 @@
 #include "Paddle.h"
 
-Paddle::Paddle()
+
+void Paddle::LoadTexture(const char* texturePath)
 {
-  Vertex vertices[] = 
-  { //CCW dir to avoid culling
-    //position                                        //color                         
-    {glm::vec3(-0.5f, -0.5f, 0.5f),   glm::vec3(0.0f, 0.0f, 1.0f)}, //closer bottom left
-    {glm::vec3(0.5f, -0.5f, 0.5f),    glm::vec3(1.0f, 0.0f, 1.0f)}, //closer bottom right
-    {glm::vec3(-0.5f, 0.5f, 0.5f),    glm::vec3(0.0f, 1.0f, 1.0f)}, //closer upper left
-    {glm::vec3(0.5f, 0.5f, 0.5f),     glm::vec3(1.0f, 1.0f, 1.0f)}, //closer upper right
+  int image_width, image_height;
 
-    {glm::vec3(-0.5f, -0.5f, -0.5f),  glm::vec3(0.0f, 0.0f, 0.0f)}, //further bottom left
-    {glm::vec3(0.5f, -0.5f, -0.5f),   glm::vec3(1.0f, 0.0f, 0.0f)}, //further bottom right
-    {glm::vec3(-0.5f, 0.5f, -0.5f),   glm::vec3(0.0f, 1.0f, 0.0f)}, //further upper left
-    {glm::vec3(0.5f, 0.5f, -0.5f),    glm::vec3(1.0f, 1.0f, 0.0f)}  //further upper right
-  };
+  unsigned char* image = stbi_load(texturePath, &image_width, &image_height, 0, 0);
 
-  GLuint indices[] =
+  glGenTextures(1, &texture_main_);
+  glBindTexture(GL_TEXTURE_2D, texture_main_);
+
+  //if texcoords will exceed <0;1>, repeat it
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  //arguments talks for themselves i think
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+  if(image)
   {
-    2, 0, 1,
-    1, 3, 2, //front
-    6, 4, 0,
-    0, 2, 6, //left
-    3, 1, 5,
-    5, 7, 3, //right
-    7, 5, 4,
-    4, 6, 7, //back
-    6, 2, 3,
-    3, 7, 6, //top
-    5, 1, 0,
-    0, 4, 5  //bottom
-  };
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image_width, image_height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+    glGenerateMipmap(GL_TEXTURE_2D);
+  }
+  else
+  {
+    MessageBoxW(NULL, L"ERROR::TEXTURE_LOADING_FAILED", L"Error", MB_OK | MB_ICONERROR);
+  }
 
-  indices_count_ = sizeof(indices) / sizeof(GLuint);
+  glActiveTexture(0);
 
-  //Vertex Array Buffer (big box)
-  glGenBuffers(1, &vao_); 
-  glBindVertexArray(vao_);
+  glBindTexture(GL_TEXTURE_2D, 0);
 
-  //Vetrex Buffer Object
-  glGenBuffers(1, &vbo_);
-  glBindBuffer(GL_ARRAY_BUFFER, vbo_);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    //POSITION
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, position)));
-  glEnableVertexAttribArray(0);
-    //COLOR
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, color)));
-  glEnableVertexAttribArray(1);
-
-  //Element Buffer Array
-  glGenBuffers(1, &ebo_);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-  glBindVertexArray(0); //unbind - just in case
-
-  model_matrix_ = glm::mat4(1.0f); //identity matrix (no scaling, 0 rotation and position of model at world origin)
+  stbi_image_free(image);
 }
+
+Paddle::Paddle(const char* meshPath, const char* texturePath): mesh_(OBJLoader::loadOBJ(meshPath))
+{
+  model_matrix_ = glm::mat4(1.0f); //identity matrix (no scaling, 0 rotation and position of model at world origin)
+  //test
+  model_matrix_ = glm::translate(model_matrix_, glm::vec3(0.0f, -1.5f, -3.0f));
+
+  //texture loading
+  LoadTexture(texturePath);
+}
+
 
 void Paddle::Draw(Shader* shader)
 {
-  //bind VAO
-  glBindVertexArray(vao_);
-
   //set shader uniform
   shader->setUniform("model", model_matrix_);
 
+  //bind mesh texture
+  glBindTexture(GL_TEXTURE_2D, texture_main_);
   //draw mesh
-  glDrawElements(GL_TRIANGLES, indices_count_, GL_UNSIGNED_INT, 0);
+  mesh_.Draw(*shader);
 
+  //unbind texture
+  glBindTexture(GL_TEXTURE_2D, 0);
   //unbind VAO
   glBindVertexArray(0);
+}
+
+void Paddle::set_position(glm::vec3 pos)
+{
+  position_ = pos;
+
+  model_matrix_ = glm::identity<glm::mat4>();
+
+  //translate to position
+  model_matrix_ = glm::translate(model_matrix_, position_);
+  // rotate to "paddle like" position
+  model_matrix_ = glm::rotate(model_matrix_, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 }
 
 Paddle::~Paddle()

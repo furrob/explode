@@ -8,6 +8,14 @@
 #include "Paddle.h"
 #include "Shader.h"
 
+//play volume dimension constants
+
+#define CAM_Z_NEAR 0.1f
+#define CAM_Z_FAR 1000.0f
+#define CAM_FOV 45.0f
+
+#define PADDLE_Z -8.0f
+
 class Game
 {
 private:
@@ -19,21 +27,23 @@ private:
 
   HDC hDC_; //handle to device context, needed for rendering
 
-  Paddle paddle_;
+  Paddle* paddle_ = nullptr;
 
   Shader shader_;
 
 public:
-
   Game(int width, int height, HDC hDC);
 
   ~Game();
-
+  
   //set everything that will be necessary 
-  //void Initialize();
+  void Initialize();
 
-  //update everything time-related and render scene
-  void Update();
+  //mouse move handler
+  void OnMouseMove(int x, int y);
+
+  //update everything time-related
+  void Update(double elapsed_time);
 
   void RenderScene();
 

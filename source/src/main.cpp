@@ -1,6 +1,7 @@
 #include "inc.h"
 
 #include "Game.h"
+#include "OBJLoader.h"
 
 BOOL Create(HWND* hWnd, LPCWSTR ClassName, PCWSTR lpWindowName, DWORD dwStyle, DWORD dwExStyle = 0,
   int x = CW_USEDEFAULT, int y = CW_USEDEFAULT, int nWidth = CW_USEDEFAULT, int nHeight = CW_USEDEFAULT,
@@ -32,6 +33,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   RECT rc;
   GetClientRect(hWnd, &rc);
   Game game(rc.right - rc.left, rc.bottom - rc.top, hDC);
+  game.Initialize();
+
 
   SendMessageW(hWnd, WM_USER, NULL, (LPARAM)&game);
 
@@ -39,6 +42,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
   //OpenGL options?
   glEnable(GL_DEPTH_TEST);
+
+  //transparency?
+  glDisable(GL_CULL_FACE);
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   MSG msg = {};
 
@@ -80,7 +88,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
       elapsedTime = ((elapsedTicks.QuadPart * 1000000.0) / counterFreq.QuadPart) / 1000000.0;
 
       //1 - update everything somehow linked to physics
-      //game.Update(elapsedTime);
+      game.Update(elapsedTime);
       //every input will be processed in different functions, called from window proc
       //
       //2 - 
@@ -124,6 +132,7 @@ INT_PTR CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
       game = reinterpret_cast<Game*>(lParam);
       return TRUE;
     }
+    //  KEYBOARD - probably will be readed async in game loop
     case WM_KEYDOWN:
     {
       switch(wParam)
@@ -139,6 +148,15 @@ INT_PTR CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
           return TRUE;
         }
       }
+      return TRUE;
+    }
+    case WM_MOUSEMOVE:
+    {
+      int x_pos = GET_X_LPARAM(lParam);
+      int y_pos = GET_Y_LPARAM(lParam);
+
+      game->OnMouseMove(x_pos, y_pos);
+
       return TRUE;
     }
     case WM_CLOSE:
