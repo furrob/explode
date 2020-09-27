@@ -1,13 +1,12 @@
-#include "Paddle.h"
+#include "Ball.h"
 
-
-void Paddle::LoadTexture(const char* texturePath)
+void Ball::LoadTexture(const char* texturePath)
 {
-  int image_width, image_height, channels;
+  int image_width, image_height;
 
   //F L I P
   //stbi_set_flip_vertically_on_load(true);
-  unsigned char* image = stbi_load(texturePath, &image_width, &image_height, &channels, 0);
+  unsigned char* image = stbi_load(texturePath, &image_width, &image_height, 0, 0);
 
   glGenTextures(1, &texture_main_);
   glBindTexture(GL_TEXTURE_2D, texture_main_);
@@ -37,21 +36,36 @@ void Paddle::LoadTexture(const char* texturePath)
   stbi_image_free(image);
 }
 
-Paddle::Paddle(const char* meshPath, const char* texturePath): mesh_(OBJLoader::loadOBJ(meshPath))
+Ball::Ball(const char* meshPath, const char* texturePath) : mesh_(OBJLoader::loadOBJ(meshPath))
 {
   //texture loading
   LoadTexture(texturePath);
 
-  position_ = glm::vec3(0.0f, 0.0f, -5.0f);
   scale_ = glm::vec3(1.0f);
 
+  position_ = glm::vec3(0.0f, 0.0f, -10.0f);
+  velocity_ = glm::vec3(0.0f);
+  acceleration_ = glm::vec3(0.0f);
+
   model_matrix_ = glm::mat4(1.0f); //identity matrix (no scaling, 0 rotation and position of model at world origin)
+  //test
+  
   model_matrix_ = glm::translate(model_matrix_, position_);
   model_matrix_ = glm::scale(model_matrix_, scale_);
 }
 
+void Ball::Update(double elapsed_time)
+{
+  position_ += (float)elapsed_time * velocity_;
+  velocity_ += (float)elapsed_time * acceleration_;
+  //acceleration_ *= 0.1f; //dumping
 
-void Paddle::Draw(Shader* shader)
+  model_matrix_ = glm::identity<glm::mat4>();
+  model_matrix_ = glm::translate(model_matrix_, position_);
+  //model_matrix_ = glm::scale(model_matrix_, scale_);
+}
+
+void Ball::Draw(Shader* shader)
 {
   //set shader uniform
   shader->setUniform("model", model_matrix_);
@@ -67,23 +81,3 @@ void Paddle::Draw(Shader* shader)
   glBindVertexArray(0);
 }
 
-void Paddle::set_position(glm::vec3 pos)
-{
-  position_ = pos;
-
-  model_matrix_ = glm::mat4(1.0f);
-
-  //translate to position
-  model_matrix_ = glm::translate(model_matrix_, position_);
-
-  //scale
-  model_matrix_ = glm::scale(model_matrix_, scale_);
-
-  //rotation
-  model_matrix_ = glm::rotate(model_matrix_, glm::radians(y_rotation_), glm::vec3(0.0f, 1.0f, 0.0f));
-}
-
-Paddle::~Paddle()
-{
-  //delete shader_;
-}
