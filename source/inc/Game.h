@@ -8,7 +8,8 @@
 #include "Paddle.h"
 #include "Ball.h"
 #include "Shader.h"
-#include "SoundManager.h"
+//#include "SoundManager.h"
+#include "MusicBox.h"
 #include "Walls.h"
 
 //play volume dimension constants
@@ -38,14 +39,18 @@ class Game
 private:
   glm::mat4 view_matrix_;
   glm::mat4 projection_matrix_;
-  SoundManager SM;
-  int sound;
 
+  HWND hWnd_;
 
   int screen_width_;
   int screen_height_;
 
   HDC hDC_; //handle to device context, needed for rendering
+  
+  //directsound
+  MusicBox* music_box_;
+  int test_sound_ = -1;
+
 
   Paddle* paddle_ = nullptr;
 
@@ -61,7 +66,7 @@ private:
   glm::vec2 last_paddle_position_ = glm::vec2(0.0f);
 
 public:
-  Game(int width, int height, HDC hDC);
+  Game(HWND hWnd, int width, int height, HDC hDC);
 
   ~Game();
   

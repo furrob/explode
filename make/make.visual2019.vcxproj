@@ -119,7 +119,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Dxguid.lib;Dsound.lib;opengl32.lib;glew32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -155,7 +155,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Dxguid.lib;Dsound.lib;opengl32.lib;glew32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -163,10 +163,10 @@
     <ClInclude Include="..\source\inc\Game.h" />
     <ClInclude Include="..\source\inc\inc.h" />
     <ClInclude Include="..\source\inc\Mesh.h" />
+    <ClInclude Include="..\source\inc\MusicBox.h" />
     <ClInclude Include="..\source\inc\OBJLoader.h" />
     <ClInclude Include="..\source\inc\Paddle.h" />
     <ClInclude Include="..\source\inc\Shader.h" />
-    <ClInclude Include="..\source\inc\SoundManager.h" />
     <ClInclude Include="..\source\inc\stb_image.h" />
     <ClInclude Include="..\source\inc\vertex.h" />
     <ClInclude Include="..\source\inc\Walls.h" />
@@ -176,10 +176,10 @@
     <ClCompile Include="..\source\src\Game.cpp" />
     <ClCompile Include="..\source\src\main.cpp" />
     <ClCompile Include="..\source\src\Mesh.cpp" />
+    <ClCompile Include="..\source\src\MusicBox.cpp" />
     <ClCompile Include="..\source\src\OBJLoader.cpp" />
     <ClCompile Include="..\source\src\Paddle.cpp" />
     <ClCompile Include="..\source\src\Shader.cpp" />
-    <ClCompile Include="..\source\src\SoundManager.cpp" />
     <ClCompile Include="..\source\src\stb_image.cpp" />
     <ClCompile Include="..\source\src\Walls.cpp" />
   </ItemGroup>
