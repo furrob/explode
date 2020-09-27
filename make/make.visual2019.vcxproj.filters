@@ -40,9 +40,6 @@
     <ClInclude Include="..\source\inc\Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\inc\stb_image.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\source\inc\Ball.h">
       <Filter>Header Files</Filter>
     </ClInclude>

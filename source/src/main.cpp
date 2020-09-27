@@ -2,7 +2,6 @@
 
 #include "Game.h"
 #include "OBJLoader.h"
-#include "SoundManager.h"
 #include <string>
 
 BOOL Create(HWND* hWnd, LPCWSTR ClassName, PCWSTR lpWindowName, DWORD dwStyle, DWORD dwExStyle = 0,

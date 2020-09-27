@@ -8,7 +8,6 @@
 #include "Paddle.h"
 #include "Ball.h"
 #include "Shader.h"
-//#include "SoundManager.h"
 #include "MusicBox.h"
 #include "Walls.h"
 
@@ -49,7 +48,7 @@ private:
   
   //directsound
   MusicBox* music_box_;
-  int test_sound_ = -1;
+  int sound_pong_ = -1;
 
 
   Paddle* paddle_ = nullptr;

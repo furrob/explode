@@ -6,7 +6,7 @@
 
 #include <Windows.h>
 
-#include "stb_image.h"
+#include <stb_image.h>
 
 #include "vertex.h"
 #include "Shader.h"

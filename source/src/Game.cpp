@@ -40,7 +40,7 @@ void Game::Initialize()
 
   music_box_ = new MusicBox(hWnd_);
   //load sounds
-  //test_sound_ = music_box_->SoundLoad("./sounds/aksamitny1.raw");
+  sound_pong_ = music_box_->SoundLoad("./sounds/pong.raw");
 }
 
 void Game::OnMouseMove(int _x, int _y)
@@ -63,12 +63,6 @@ void Game::OnMouseMove(int _x, int _y)
 
 void Game::Update(double elapsed_time)
 {
-  //sound test
-  //if((GetAsyncKeyState(VK_F1) & 0x8000) != 0)
-  //{
-  //  music_box_->SoundPlay(test_sound_);
-  //}
-  //keyboard
   if((GetAsyncKeyState(VK_TAB) & 0x8000) != 0)
   {
     ball_->velocity_ = glm::vec3(0.0f, 0.0f, -20.0f);
@@ -97,6 +91,9 @@ void Game::Update(double elapsed_time)
   //check if ball reached back wall
   if(ball_->position_.z - BALL_RADIUS < BACK_WALL)
   {
+    //sound
+    music_box_->SoundPlay(sound_pong_);
+
     ball_->velocity_.z = (ball_->velocity_.z) * -1.05f;
     ball_->position_.z = BACK_WALL + BALL_RADIUS;
 
@@ -112,6 +109,9 @@ void Game::Update(double elapsed_time)
       ball_->position_.y + BALL_RADIUS > paddle_->position_.y - paddle_->body_.bottom)
     {
       //HIT-HIT-HIT-HIT-HIT-HIT-HIT-HIT-HIT-HIT-HIT-HIT-HIT
+      //sound
+      music_box_->SoundPlay(sound_pong_);
+
       ball_->velocity_.z = -(ball_->velocity_.z);
 
       //calculate displacement between centers and modify ball velocity based on that displacement
