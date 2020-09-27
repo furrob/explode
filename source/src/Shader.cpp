@@ -27,7 +27,7 @@ Shader::Shader(const char* vertex_path, const char* fragment_path)
   }
   catch(ifstream::failure e)
   {
-    MessageBoxW(NULL, L"Error Shader File not succesfully read", L"Error", MB_OK | MB_ICONERROR);
+    MessageBoxW(NULL, L"ERROR::SHADER::VERTEX::FILE_READ_FAILED", L"Error", MB_OK | MB_ICONERROR);
   }
   int success;
   const char* vShaderCode = vertexCode.c_str();
@@ -44,7 +44,7 @@ Shader::Shader(const char* vertex_path, const char* fragment_path)
   if(!success)
   {
     glGetShaderInfoLog(vertex, 512, NULL, infoLog);
-    MessageBoxW(NULL, L"ERROR::SHADER::VERTEX::COMPILATION_FAILED\n", L"ERROR", MB_OK | MB_ICONERROR);
+    MessageBoxW(NULL, L"ERROR::SHADER::VERTEX::COMPILATION_FAILED", L"ERROR", MB_OK | MB_ICONERROR);
   }
 
       //fragment shader

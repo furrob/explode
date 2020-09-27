@@ -39,7 +39,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   //game object creation
   RECT rc;
   GetClientRect(hWnd, &rc);
-  Game game(rc.right - rc.left, rc.bottom - rc.top, hDC);
+  Game game(hWnd, rc.right - rc.left, rc.bottom - rc.top, hDC);
   game.Initialize();
 
 

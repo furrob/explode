@@ -1,9 +1,9 @@
 #include "Game.h"
 
 
-Game::Game(int width, int height, HDC hDC) : shader_("../../source/shaders/vertex.glsl", "../../source/shaders/fragment.glsl")
+Game::Game(HWND hWnd, int width, int height, HDC hDC) : shader_("../../source/shaders/vertex.glsl", "../../source/shaders/fragment.glsl")
 {
-  
+  hWnd_ = hWnd;
   hDC_ = hDC;
 
   shader_.use();
@@ -21,6 +21,7 @@ Game::~Game()
 {
   delete paddle_;
   delete enemy_paddle_;
+  delete music_box_;
   delete ball_;
   delete walls_;
 }
@@ -36,6 +37,10 @@ void Game::Initialize()
   ball_ = new Ball("./models/ball.obj", "./textures/test.png");
 
   walls_ = new Walls(PADDLE_Z, BACK_WALL, PADDLE_MAX_X, PADDLE_MAX_Y);
+
+  music_box_ = new MusicBox(hWnd_);
+  //load sounds
+  //test_sound_ = music_box_->SoundLoad("./sounds/aksamitny1.raw");
 }
 
 void Game::OnMouseMove(int _x, int _y)
@@ -58,6 +63,11 @@ void Game::OnMouseMove(int _x, int _y)
 
 void Game::Update(double elapsed_time)
 {
+  //sound test
+  //if((GetAsyncKeyState(VK_F1) & 0x8000) != 0)
+  //{
+  //  music_box_->SoundPlay(test_sound_);
+  //}
   //keyboard
   if((GetAsyncKeyState(VK_TAB) & 0x8000) != 0)
   {
