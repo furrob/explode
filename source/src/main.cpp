@@ -2,6 +2,8 @@
 
 #include "Game.h"
 #include "OBJLoader.h"
+#include "SoundManager.h"
+#include <string>
 
 BOOL Create(HWND* hWnd, LPCWSTR ClassName, PCWSTR lpWindowName, DWORD dwStyle, DWORD dwExStyle = 0,
   int x = CW_USEDEFAULT, int y = CW_USEDEFAULT, int nWidth = CW_USEDEFAULT, int nHeight = CW_USEDEFAULT,
@@ -25,6 +27,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   }
   
   ShowWindow(hWnd, iCmdShow);
+
+
+
+
+
 
   HDC hDC = GetDC(hWnd); //device context
   HGLRC hRC = wglGetCurrentContext(); //rendering context

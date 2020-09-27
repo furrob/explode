@@ -3,6 +3,7 @@
 
 Game::Game(int width, int height, HDC hDC) : shader_("../../source/shaders/vertex.glsl", "../../source/shaders/fragment.glsl")
 {
+  
   hDC_ = hDC;
 
   shader_.use();
@@ -57,7 +58,6 @@ void Game::OnMouseMove(int _x, int _y)
 
 void Game::Update(double elapsed_time)
 {
-  //TEST
   //keyboard
   if((GetAsyncKeyState(VK_TAB) & 0x8000) != 0)
   {
@@ -142,7 +142,6 @@ void Game::Update(double elapsed_time)
   
 
 
-  //TEST
 }
 
 void Game::RenderScene()

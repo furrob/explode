@@ -8,6 +8,7 @@
 #include "Paddle.h"
 #include "Ball.h"
 #include "Shader.h"
+#include "SoundManager.h"
 #include "Walls.h"
 
 //play volume dimension constants
@@ -35,6 +36,8 @@ class Game
 private:
   glm::mat4 view_matrix_;
   glm::mat4 projection_matrix_;
+  SoundManager SM;
+  int sound;
 
 
   int screen_width_;
