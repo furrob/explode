@@ -131,6 +131,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 INT_PTR CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
   static Game* game = nullptr;
+  static BOOL cursor_hidden = FALSE;
 
   switch(uMsg)
   {
@@ -149,9 +150,34 @@ INT_PTR CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
           PostQuitMessage(0);
           return TRUE;
         }
-        case VK_F4:
+        case 0x31: //1 key
         {
-          //just test lol
+          if(cursor_hidden == FALSE)
+          {
+            ShowCursor(FALSE);
+            cursor_hidden = TRUE;
+          }
+          return TRUE;
+        }
+        case 0x32: //2 key
+        {
+          if(cursor_hidden == TRUE)
+          {
+            ShowCursor(TRUE);
+            cursor_hidden = FALSE;
+          }
+          return TRUE;
+        }
+        case 0x33: //3 key
+        {
+          RECT rc;
+          GetClientRect(hWnd, &rc);
+          ClipCursor(&rc);
+          return TRUE;
+        }
+        case 0x34: //4 key
+        {
+          ClipCursor(NULL);
           return TRUE;
         }
       }
@@ -162,7 +188,8 @@ INT_PTR CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
       int x_pos = GET_X_LPARAM(lParam);
       int y_pos = GET_Y_LPARAM(lParam);
 
-      game->OnMouseMove(x_pos, y_pos);
+      if(game != nullptr)
+        game->OnMouseMove(x_pos, y_pos);
 
       return TRUE;
     }

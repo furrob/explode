@@ -46,6 +46,12 @@
     <ClInclude Include="..\source\inc\SoundManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\inc\Ball.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\inc\Walls.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\src\main.cpp">
@@ -70,6 +76,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\source\src\SoundManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\src\Ball.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\src\Walls.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
