@@ -5,6 +5,8 @@
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include<unordered_map>
+
 #include "Paddle.h"
 #include "Ball.h"
 #include "Shader.h"
@@ -29,9 +31,15 @@
 #define BACK_WALL -45.0f
 
 //bounce
-#define BOUNCE_DISPLACEMENT 0.5f
-#define PADDLE_VEL_MULTIPLIER 0.5f
-#define PADDLE_BALL_SPIN_ACC  3.00f
+#define BOUNCE_DUMPING_FACTOR 0.65f
+
+#define BOUNCE_DISPLACEMENT 0.0f
+#define PADDLE_VEL_MULTIPLIER 0.0f
+#define PADDLE_BALL_SPIN_ACC  0.5f
+
+#define BALL_ACC_WINDUP 30.0f
+
+typedef std::unordered_map<const char*, int> SoundsLib;
 
 class Game
 {
@@ -48,8 +56,7 @@ private:
   
   //directsound
   MusicBox* music_box_;
-  int sound_pong_ = -1;
-
+  SoundsLib sounds_;
 
   Paddle* paddle_ = nullptr;
 

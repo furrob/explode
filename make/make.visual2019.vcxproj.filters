@@ -86,13 +86,13 @@
     <None Include="..\source\shaders\fragment.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="..\source\shaders\fragment_core.glsl">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="..\source\shaders\vertex.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="..\source\shaders\vertex_core.glsl">
+    <None Include="..\source\shaders\fragment_ball.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\source\shaders\vertex_ball.glsl">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

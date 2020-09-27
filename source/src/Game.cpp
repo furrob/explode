@@ -8,10 +8,17 @@ Game::Game(HWND hWnd, int width, int height, HDC hDC) : shader_("../../source/sh
 
   shader_.use();
 
+  glm::vec3 view_pos(0.0f, 0.0f, -1.0f);
+
   view_matrix_ = glm::mat4(1.0f); //"camera"
-  view_matrix_ = glm::translate(view_matrix_, glm::vec3(0.0f, 0.0f, -1.0f)); //camera at origin
+  view_matrix_ = glm::translate(view_matrix_, view_pos); //camera at origin
+
+  //for shading purposes
+  shader_.setUniform("view_pos", view_pos);
 
   shader_.setUniform("view", view_matrix_);
+  //light color in shader
+  shader_.setUniform("light_color", glm::vec3(1.0f, 1.0f, 1.0f));
 
   //viewport and perspective matrix settings
   ResizeScene(width, height);
@@ -40,7 +47,8 @@ void Game::Initialize()
 
   music_box_ = new MusicBox(hWnd_);
   //load sounds
-  sound_pong_ = music_box_->SoundLoad("./sounds/pong.raw");
+  //sound_pong_ = music_box_->SoundLoad("./sounds/pong.raw");
+  sounds_["pong"] = music_box_->SoundLoad("./sounds/pong.raw");
 }
 
 void Game::OnMouseMove(int _x, int _y)
@@ -73,7 +81,7 @@ void Game::Update(double elapsed_time)
   ball_->velocity_.x += ball_->acceleration_.x * (float)elapsed_time;
   ball_->velocity_.y += ball_->acceleration_.y * (float)elapsed_time;
 
-  ball_->acceleration_ *= (1.5f * elapsed_time); //parameter in game.h
+  ball_->acceleration_ *= (BALL_ACC_WINDUP * elapsed_time);
 
   //enemy paddle AI
   float x_pos = ball_->position_.x;
@@ -92,7 +100,7 @@ void Game::Update(double elapsed_time)
   if(ball_->position_.z - BALL_RADIUS < BACK_WALL)
   {
     //sound
-    music_box_->SoundPlay(sound_pong_);
+    music_box_->SoundPlay(sounds_["pong"]);
 
     ball_->velocity_.z = (ball_->velocity_.z) * -1.05f;
     ball_->position_.z = BACK_WALL + BALL_RADIUS;
@@ -100,7 +108,7 @@ void Game::Update(double elapsed_time)
     //reset accel
     ball_->acceleration_ = glm::vec2(0.0f);
   }
-  else if(ball_->position_.z + BALL_RADIUS > PADDLE_Z) //if it reached paddle's depth
+  else if(ball_->position_.z + BALL_RADIUS > PADDLE_Z) //if it reached paddle's depth <-- MARGIN INCLUDED
   {
     //check if it has hit the paddle (more-than-half-ball bounces are also valid)
     if(ball_->position_.x - BALL_RADIUS < paddle_->position_.x + paddle_->body_.right &&
@@ -110,7 +118,7 @@ void Game::Update(double elapsed_time)
     {
       //HIT-HIT-HIT-HIT-HIT-HIT-HIT-HIT-HIT-HIT-HIT-HIT-HIT
       //sound
-      music_box_->SoundPlay(sound_pong_);
+      music_box_->SoundPlay(sounds_["pong"]);
 
       ball_->velocity_.z = -(ball_->velocity_.z);
 
@@ -122,15 +130,13 @@ void Game::Update(double elapsed_time)
       ball_->velocity_.y += bounce_velocity.y;
 
       //calculate paddle velocity
-      glm::vec2 paddle_velocity = (glm::vec2(paddle_->position_.x, paddle_->position_.y) - last_paddle_position_) / ((float)elapsed_time * 50.0f);
+      glm::vec2 paddle_velocity = (glm::vec2(paddle_->position_.x, paddle_->position_.y) - last_paddle_position_) / ((float)elapsed_time);
 
-      //ball_->velocity_ += (paddle_velocity * (float)PADDLE_VEL_MULTIPLIER);
+
       ball_->velocity_.x += (paddle_velocity.x * PADDLE_VEL_MULTIPLIER);
       ball_->velocity_.y += (paddle_velocity.y * PADDLE_VEL_MULTIPLIER);
 
-      ball_->acceleration_ = (paddle_velocity * -(float)PADDLE_BALL_SPIN_ACC);
-      //ball_->acceleration_.x = (paddle_velocity.x * PADDLE_BALL_SPIN_ACC);
-      //ball_->acceleration_.y = (paddle_velocity.y * PADDLE_BALL_SPIN_ACC);
+      ball_->acceleration_ = (paddle_velocity/(float)elapsed_time) * -(float)PADDLE_BALL_SPIN_ACC;
 
 
       ball_->position_.z = PADDLE_Z - BALL_RADIUS;
@@ -145,45 +151,48 @@ void Game::Update(double elapsed_time)
   //left side collision
   if(ball_->position_.x  - BALL_RADIUS < -PADDLE_MAX_X)
   {
-    ball_->velocity_.x = -(ball_->velocity_.x);
+    ball_->velocity_.x = -(ball_->velocity_.x) * BOUNCE_DUMPING_FACTOR;
     ball_->position_.x = -PADDLE_MAX_X + BALL_RADIUS;
   }
   //right side
   else if(ball_->position_.x + BALL_RADIUS > PADDLE_MAX_X)
   {
-    ball_->velocity_.x = -(ball_->velocity_.x);
+    ball_->velocity_.x = -(ball_->velocity_.x) * BOUNCE_DUMPING_FACTOR;
     ball_->position_.x = PADDLE_MAX_X - BALL_RADIUS;
   }
 
   //top collision
   if(ball_->position_.y + BALL_RADIUS > PADDLE_MAX_Y)
   {
-    ball_->velocity_.y = -(ball_->velocity_.y);
+    ball_->velocity_.y = -(ball_->velocity_.y) * BOUNCE_DUMPING_FACTOR;
     ball_->position_.y = PADDLE_MAX_Y - BALL_RADIUS;
   }
   //bottom collision
   else if(ball_->position_.y - BALL_RADIUS < -PADDLE_MAX_Y)
   {
-    ball_->velocity_.y = -(ball_->velocity_.y);
+    ball_->velocity_.y = -(ball_->velocity_.y) * BOUNCE_DUMPING_FACTOR;
     ball_->position_.y = -PADDLE_MAX_Y + BALL_RADIUS;
   }
   
   
 
   //save paddle position to use it in next frame
-  //last_paddle_position_ = glm::vec2(paddle_->position_.x, paddle_->position_.y);
+  last_paddle_position_ = glm::vec2(paddle_->position_.x, paddle_->position_.y);
 }
 
 void Game::RenderScene()
 {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  glClearColor(1.0f, 0.5f, 0.25f, 0.0f);
+  glClearColor(0.2f, 0.1f, 0.15f, 0.0f);
 
   //set up shader uniforms
 
   //shader_.setUniform("view", view_matrix_); //camera stays in place so why bother to update since there is only one shader? (for now hehe)
   //shader_.setUniform("projection", projection_matrix_); //changes only if window was resized, moved to ResizeScene (idk if this should be like that
+
+  //LIGHT POSITION SHADER!!!! AND COLOR
+  shader_.setUniform("light_pos", ball_->position_);
 
   //walls
   shader_.setUniform("walls", true);
@@ -193,8 +202,10 @@ void Game::RenderScene()
   //enemy paddle
   enemy_paddle_->Draw(&shader_);
 
-  //ball
+  //ball, because it is the light source, turn off shading when rendering it
+  shader_.setUniform("ball", true);
   ball_->Draw(&shader_);
+  shader_.setUniform("ball", false);
 
   //player paddle
   shader_.setUniform("player_paddle", true);

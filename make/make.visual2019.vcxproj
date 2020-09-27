@@ -184,9 +184,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\source\shaders\fragment.glsl" />
-    <None Include="..\source\shaders\fragment_core.glsl" />
+    <None Include="..\source\shaders\fragment_ball.glsl" />
     <None Include="..\source\shaders\vertex.glsl" />
-    <None Include="..\source\shaders\vertex_core.glsl" />
+    <None Include="..\source\shaders\vertex_ball.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

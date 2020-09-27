@@ -5,14 +5,22 @@ Walls::Walls(float front_depth, float back_depth, float half_width, float half_h
   //create vertices
   Vertex vertices[] =
   {
-    {glm::vec3(-half_width, half_height, front_depth), glm::vec2(0.0f), glm::vec3(0.0f)},//front left top     0
-    {glm::vec3(half_width, half_height, front_depth), glm::vec2(0.0f), glm::vec3(0.0f)},//front right top     1
-    {glm::vec3(-half_width, -half_height, front_depth), glm::vec2(0.0f), glm::vec3(0.0f)},//front bottom left 2
-    {glm::vec3(half_width, -half_height, front_depth), glm::vec2(0.0f), glm::vec3(0.0f)},//front bottom right 3
-    {glm::vec3(-half_width, half_height, back_depth), glm::vec2(0.0f), glm::vec3(0.0f)},//back left top     4
-    {glm::vec3(half_width, half_height, back_depth), glm::vec2(0.0f), glm::vec3(0.0f)},//back right top     5
-    {glm::vec3(-half_width, -half_height, back_depth), glm::vec2(0.0f), glm::vec3(0.0f)},//back bottom left 6
-    {glm::vec3(half_width, -half_height, back_depth), glm::vec2(0.0f), glm::vec3(0.0f)},//back bottom right 7
+    {glm::vec3(-half_width, half_height, front_depth), glm::vec2(0.0f), glm::vec3(0.0f, -1.0f, 0.0f)},//front left top top    0
+    {glm::vec3(-half_width, half_height, front_depth), glm::vec2(0.0f), glm::vec3(1.0f, 0.0f, 0.0f)},//front left top left    1
+    {glm::vec3(half_width, half_height, front_depth), glm::vec2(0.0f), glm::vec3(0.0f, -1.0f, 0.0f)},//front right top top    2
+    {glm::vec3(half_width, half_height, front_depth), glm::vec2(0.0f), glm::vec3(-1.0f, 0.0f, 0.0f)},//front right top right   3
+    {glm::vec3(-half_width, -half_height, front_depth), glm::vec2(0.0f), glm::vec3(0.0f, 1.0f, 0.0f)},//front bottom left bottom 4
+    {glm::vec3(-half_width, -half_height, front_depth), glm::vec2(0.0f), glm::vec3(1.0f, 0.0f, 0.0f)},//front bottom left left 5
+    {glm::vec3(half_width, -half_height, front_depth), glm::vec2(0.0f), glm::vec3(0.0f, 1.0f, 0.0f)},//front bottom right bottom 6
+    {glm::vec3(half_width, -half_height, front_depth), glm::vec2(0.0f), glm::vec3(-1.0f, 0.0f, 0.0f)},//front bottom right right 7
+    {glm::vec3(-half_width, half_height, back_depth), glm::vec2(0.0f), glm::vec3(0.0f, -1.0f, 0.0f)},//back left top top     8
+    {glm::vec3(-half_width, half_height, back_depth), glm::vec2(0.0f), glm::vec3(1.0f, 0.0f, 0.0f)},//back left top left     9
+    {glm::vec3(half_width, half_height, back_depth), glm::vec2(0.0f), glm::vec3(0.0f, -1.0f, 0.0f)},//back right top top     10
+    {glm::vec3(half_width, half_height, back_depth), glm::vec2(0.0f), glm::vec3(-1.0f, 0.0f, 0.0f)},//back right top right   11
+    {glm::vec3(-half_width, -half_height, back_depth), glm::vec2(0.0f), glm::vec3(0.0f, 1.0f, 0.0f)},//back bottom left bottom 12
+    {glm::vec3(-half_width, -half_height, back_depth), glm::vec2(0.0f), glm::vec3(1.0f, 0.0f, 0.0f)},//back bottom left left 13
+    {glm::vec3(half_width, -half_height, back_depth), glm::vec2(0.0f), glm::vec3(0.0f, 1.0f, 0.0f)},//back bottom right bottom 14
+    {glm::vec3(half_width, -half_height, back_depth), glm::vec2(0.0f), glm::vec3(-1.0f, 0.0f, 0.0f)},//back bottom right right 15
   };
   /*{
     {glm::vec3(0.0f, 0.5f, -2.0f), glm::vec2(0.0f), glm::vec3(0.0f)},
@@ -23,14 +31,14 @@ Walls::Walls(float front_depth, float back_depth, float half_width, float half_h
 
   GLuint indices[] =
   {
-    0, 2, 6,
-    0, 4, 6, //left
-    1, 3, 7,
-    1, 5, 7,//right
-    1, 0, 4,
-    1, 5, 4,//top
-    2, 3, 7,
-    2, 6, 7//bottom
+    1, 5, 13,
+    1 ,9, 13,//left
+    3, 7, 15,
+    3, 11, 15,//right
+    0, 2, 10,
+    0, 8, 10,//top
+    4, 6, 14,
+    4, 12, 14//bottom
   };
   indices_count_ = sizeof(indices) / sizeof(GLuint);
 

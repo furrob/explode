@@ -28,10 +28,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   ShowWindow(hWnd, iCmdShow);
 
 
-
-
-
-
   HDC hDC = GetDC(hWnd); //device context
   HGLRC hRC = wglGetCurrentContext(); //rendering context
 
