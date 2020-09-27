@@ -29,7 +29,9 @@
 #define BACK_WALL -45.0f
 
 //bounce
-#define BOUNCE_DISPLACEMENT 2.0f
+#define BOUNCE_DISPLACEMENT 0.5f
+#define PADDLE_VEL_MULTIPLIER 0.5f
+#define PADDLE_BALL_SPIN_ACC  3.00f
 
 class Game
 {
@@ -54,6 +56,9 @@ private:
   Walls* walls_ = nullptr;
 
   Shader shader_;
+
+  //paddle position from last frame to calculate paddle
+  glm::vec2 last_paddle_position_ = glm::vec2(0.0f);
 
 public:
   Game(int width, int height, HDC hDC);

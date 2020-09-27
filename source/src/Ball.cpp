@@ -45,7 +45,7 @@ Ball::Ball(const char* meshPath, const char* texturePath) : mesh_(OBJLoader::loa
 
   position_ = glm::vec3(0.0f, 0.0f, -10.0f);
   velocity_ = glm::vec3(0.0f);
-  acceleration_ = glm::vec3(0.0f);
+  acceleration_ = glm::vec2(0.0f);
 
   model_matrix_ = glm::mat4(1.0f); //identity matrix (no scaling, 0 rotation and position of model at world origin)
   //test
@@ -56,8 +56,8 @@ Ball::Ball(const char* meshPath, const char* texturePath) : mesh_(OBJLoader::loa
 
 void Ball::Update(double elapsed_time)
 {
-  position_ += (float)elapsed_time * velocity_;
-  velocity_ += (float)elapsed_time * acceleration_;
+  //position_ += (float)elapsed_time * velocity_;
+  //velocity_ += (float)elapsed_time * acceleration_;
   //acceleration_ *= 0.1f; //dumping
 
   model_matrix_ = glm::identity<glm::mat4>();

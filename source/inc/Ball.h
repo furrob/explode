@@ -33,7 +33,8 @@ public:
 
   glm::vec3 velocity_;
 
-  glm::vec3 acceleration_;
+  //acceleration only in x-y plane
+  glm::vec2 acceleration_;
 
   Ball(const char* meshPath, const char* texturePath);
 

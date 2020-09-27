@@ -66,6 +66,10 @@ void Game::Update(double elapsed_time)
 
   //update ball position, velocity etc.
   ball_->position_ += ball_->velocity_ * (float)elapsed_time;
+  ball_->velocity_.x += ball_->acceleration_.x * (float)elapsed_time;
+  ball_->velocity_.y += ball_->acceleration_.y * (float)elapsed_time;
+
+  ball_->acceleration_ *= (1.5f * elapsed_time); //parameter in game.h
 
   //enemy paddle AI
   float x_pos = ball_->position_.x;
@@ -85,6 +89,9 @@ void Game::Update(double elapsed_time)
   {
     ball_->velocity_.z = (ball_->velocity_.z) * -1.05f;
     ball_->position_.z = BACK_WALL + BALL_RADIUS;
+
+    //reset accel
+    ball_->acceleration_ = glm::vec2(0.0f);
   }
   else if(ball_->position_.z + BALL_RADIUS > PADDLE_Z) //if it reached paddle's depth
   {
@@ -103,6 +110,18 @@ void Game::Update(double elapsed_time)
 
       ball_->velocity_.x += bounce_velocity.x;
       ball_->velocity_.y += bounce_velocity.y;
+
+      //calculate paddle velocity
+      glm::vec2 paddle_velocity = (glm::vec2(paddle_->position_.x, paddle_->position_.y) - last_paddle_position_) / ((float)elapsed_time * 50.0f);
+
+      //ball_->velocity_ += (paddle_velocity * (float)PADDLE_VEL_MULTIPLIER);
+      ball_->velocity_.x += (paddle_velocity.x * PADDLE_VEL_MULTIPLIER);
+      ball_->velocity_.y += (paddle_velocity.y * PADDLE_VEL_MULTIPLIER);
+
+      ball_->acceleration_ = (paddle_velocity * -(float)PADDLE_BALL_SPIN_ACC);
+      //ball_->acceleration_.x = (paddle_velocity.x * PADDLE_BALL_SPIN_ACC);
+      //ball_->acceleration_.y = (paddle_velocity.y * PADDLE_BALL_SPIN_ACC);
+
 
       ball_->position_.z = PADDLE_Z - BALL_RADIUS;
     }
@@ -141,7 +160,8 @@ void Game::Update(double elapsed_time)
   
   
 
-
+  //save paddle position to use it in next frame
+  //last_paddle_position_ = glm::vec2(paddle_->position_.x, paddle_->position_.y);
 }
 
 void Game::RenderScene()
