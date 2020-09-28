@@ -117,11 +117,25 @@ void Game::Update(double elapsed_time)
   //check if ball reached back wall
   if(ball_->position_.z - BALL_RADIUS < BACK_WALL)
   {
-    //sound
-    music_box_->SoundPlay(sounds_["pong"]);
+    //check if it has hit the paddle (more-than-half-ball bounces are also valid)
+    if(ball_->position_.x - BALL_RADIUS < enemy_paddle_->position_.x + enemy_paddle_->body_.right &&
+      ball_->position_.x + BALL_RADIUS > enemy_paddle_->position_.x - enemy_paddle_->body_.left &&
+      ball_->position_.y - BALL_RADIUS < enemy_paddle_->position_.y + enemy_paddle_->body_.top &&
+      ball_->position_.y + BALL_RADIUS > enemy_paddle_->position_.y - enemy_paddle_->body_.bottom)
+    {
+      //AI HIT
+      //sound
+      music_box_->SoundPlay(sounds_["pong"]);
 
-    ball_->velocity_.z = (ball_->velocity_.z) * -Z_BOUNCE_VEL_MULTIPLIER;
-    ball_->position_.z = BACK_WALL + BALL_RADIUS;
+      ball_->velocity_.z = (ball_->velocity_.z) * -Z_BOUNCE_VEL_MULTIPLIER;
+      ball_->position_.z = BACK_WALL + BALL_RADIUS;
+    }
+    else
+    {
+      //NO HIT
+      ball_->velocity_ = glm::vec3(0.0f);
+      ball_->position_ = glm::vec3(0.0f, 0.0f, PADDLE_Z - 0.5f);
+    }
 
     //reset accel
     ball_->acceleration_ = glm::vec2(0.0f);
@@ -228,7 +242,6 @@ void Game::RenderScene()
   shader_.setUniform("player_paddle", true);
   paddle_->Draw(&shader_);
   shader_.setUniform("player_paddle", false);
-  
   
 
   SwapBuffers(hDC_);

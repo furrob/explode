@@ -22,23 +22,18 @@ Walls::Walls(float front_depth, float back_depth, float half_width, float half_h
     {glm::vec3(half_width, -half_height, back_depth), glm::vec2(0.0f), glm::vec3(0.0f, 1.0f, 0.0f)},//back bottom right bottom 14
     {glm::vec3(half_width, -half_height, back_depth), glm::vec2(0.0f), glm::vec3(-1.0f, 0.0f, 0.0f)},//back bottom right right 15
   };
-  /*{
-    {glm::vec3(0.0f, 0.5f, -2.0f), glm::vec2(0.0f), glm::vec3(0.0f)},
-    {glm::vec3(0.5f, 0.0f, -2.0f), glm::vec2(0.0f), glm::vec3(0.0f)},
-    {glm::vec3(-0.5f, 0.0f, -2.0f), glm::vec2(0.0f), glm::vec3(0.0f)}
-  };*/
   //GLuint vertices_count = sizeof(vertices) / sizeof(float);
 
   GLuint indices[] =
   {
     1, 5, 13,
-    1 ,9, 13,//left
-    3, 7, 15,
-    3, 11, 15,//right
-    0, 2, 10,
-    0, 8, 10,//top
-    4, 6, 14,
-    4, 12, 14//bottom
+    1 ,13, 9,//left
+    3, 11, 15,
+    3, 15, 7,//right
+    0, 8, 2,
+    2, 8, 10,//top
+    6, 14, 12,
+    6, 12, 4//bottom
   };
   indices_count_ = sizeof(indices) / sizeof(GLuint);
 

@@ -97,6 +97,11 @@ INT MusicBox::SoundLoad(const char* file_path)
   }
 }
 
+INT MusicBox::SoundLoadBackground(const char* file_path)
+{
+  return NULL;
+}
+
 void MusicBox::SoundPlay(INT sound_index)
 {
   if(sound_index < 0 || sound_index > sounds_.size() - 1)

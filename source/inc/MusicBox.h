@@ -28,6 +28,7 @@ public:
   /// <param name="file_path"></param>
   /// <returns></returns>
   INT SoundLoad(const char* file_path);
+  INT SoundLoadBackground(const char* file_path);
 
   void SoundPlay(INT sound_index);
 };
