@@ -167,7 +167,6 @@
     <ClInclude Include="..\source\inc\OBJLoader.h" />
     <ClInclude Include="..\source\inc\Paddle.h" />
     <ClInclude Include="..\source\inc\Shader.h" />
-    <ClInclude Include="..\source\inc\stb_image.h" />
     <ClInclude Include="..\source\inc\vertex.h" />
     <ClInclude Include="..\source\inc\Walls.h" />
   </ItemGroup>
