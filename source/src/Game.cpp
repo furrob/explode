@@ -40,6 +40,7 @@ void Game::Initialize()
 
   enemy_paddle_ = new Paddle("./models/paddle.obj", "./textures/texture.png");
   enemy_paddle_->y_rotation_ = 180.0f;
+  enemy_paddle_->set_position(glm::vec3(0.0f, 0.0f, BACK_WALL));
 
   ball_ = new Ball("./models/ball.obj", "./textures/test.png");
   ball_->position_ = glm::vec3(0.0f, 0.0f, PADDLE_Z - PADDLE_Z_HIT_MARGIN - BALL_RADIUS);
@@ -84,16 +85,32 @@ void Game::Update(double elapsed_time)
 
   ball_->acceleration_ += (ball_->acceleration_ * (float)(BALL_ACC_WINDUP * elapsed_time));
 
-  //enemy paddle AI
-  float x_pos = ball_->position_.x;
-  float y_pos = ball_->position_.y;
+  //enemy paddle AI ______________________________________________________________________________________________________________________Warning
+  float x_pos= ball_->position_.x;
+  float y_pos= ball_->position_.y;
+  //float speed_factor=5;
+  float difficulty=1.2; //between 0 and 1.8
+  float nearBonus;
+  if (ball_->position_.z <= -25*difficulty) //_________________________________________________________________________________________Enemy paddle activates after ball reaches -25 z
+  {
+      nearBonus = (( ball_->position_.z/ BACK_WALL )*1.8)/(difficulty+0.01);
+      float x = (ball_->position_.x - enemy_paddle_->position_.x) * 2.2 * (float)elapsed_time*nearBonus;
+     // x = (abs(x) <= speed_factor * (float)elapsed_time) ? (x <= 0) ? -speed_factor * (float)elapsed_time : speed_factor * (float)elapsed_time : x;
+      x_pos = enemy_paddle_->position_.x + x;
+    
+    
+      float y = (ball_->position_.y - enemy_paddle_->position_.y) * 2.2 * (float)elapsed_time* nearBonus;
+      //y = (abs(y) <= speed_factor * (float)elapsed_time) ? (y <= 0) ? -speed_factor * (float)elapsed_time : speed_factor * (float)elapsed_time : y;
+      y_pos = enemy_paddle_->position_.y + y;
+    
 
-  x_pos = (x_pos + enemy_paddle_->body_.right > PADDLE_MAX_X) ? PADDLE_MAX_X - enemy_paddle_->body_.right : x_pos;
-  x_pos = (x_pos - enemy_paddle_->body_.left < -PADDLE_MAX_X) ? -PADDLE_MAX_X + enemy_paddle_->body_.right : x_pos;
-  y_pos = (y_pos + enemy_paddle_->body_.top > PADDLE_MAX_Y) ? PADDLE_MAX_Y - enemy_paddle_->body_.top : y_pos;
-  y_pos = (y_pos - enemy_paddle_->body_.bottom < -PADDLE_MAX_Y) ? -PADDLE_MAX_Y + enemy_paddle_->body_.bottom : y_pos;
-  enemy_paddle_->set_position(glm::vec3(x_pos, y_pos, BACK_WALL));
-
+    x_pos = (x_pos + enemy_paddle_->body_.right > PADDLE_MAX_X) ? PADDLE_MAX_X - enemy_paddle_->body_.right : x_pos;
+    x_pos = (x_pos - enemy_paddle_->body_.left < -PADDLE_MAX_X) ? -PADDLE_MAX_X + enemy_paddle_->body_.right : x_pos;
+    y_pos = (y_pos + enemy_paddle_->body_.top > PADDLE_MAX_Y) ? PADDLE_MAX_Y - enemy_paddle_->body_.top : y_pos;
+    y_pos = (y_pos - enemy_paddle_->body_.bottom < -PADDLE_MAX_Y) ? -PADDLE_MAX_Y + enemy_paddle_->body_.bottom : y_pos;
+    enemy_paddle_->set_position(glm::vec3(x_pos, y_pos, BACK_WALL));
+  }
+  //_________________________________________________________________________________________//_________________________________________________________________________________________AI END
   //update ball matrices
   ball_->model_matrix_ = glm::translate(glm::mat4(1.0f), ball_->position_);
 
