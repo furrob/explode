@@ -50,6 +50,9 @@ void Game::Initialize()
   //load sounds
   //sound_pong_ = music_box_->SoundLoad("./sounds/pong.raw");
   sounds_["pong"] = music_box_->SoundLoad("./sounds/pong.raw");
+  sounds_["theme"] = music_box_->SoundLoad("./sounds/mainTheme.raw");
+  sounds_["lose"] = music_box_->SoundLoad("./sounds/lose.raw");
+  music_box_->SoundPlay(sounds_["theme"], 1);
 }
 
 void Game::OnMouseMove(int _x, int _y)
@@ -101,7 +104,7 @@ void Game::Update(double elapsed_time)
   if(ball_->position_.z - BALL_RADIUS < BACK_WALL)
   {
     //sound
-    music_box_->SoundPlay(sounds_["pong"]);
+    music_box_->SoundPlay(sounds_["pong"], 0);
 
     ball_->velocity_.z = (ball_->velocity_.z) * -Z_BOUNCE_VEL_MULTIPLIER;
     ball_->position_.z = BACK_WALL + BALL_RADIUS;
@@ -119,7 +122,7 @@ void Game::Update(double elapsed_time)
     {
       //HIT-HIT-HIT-HIT-HIT-HIT-HIT-HIT-HIT-HIT-HIT-HIT-HIT
       //sound
-      music_box_->SoundPlay(sounds_["pong"]);
+      music_box_->SoundPlay(sounds_["pong"],0);
 
       ball_->velocity_.z = -(ball_->velocity_.z);
 
@@ -145,6 +148,8 @@ void Game::Update(double elapsed_time)
     {
       ball_->velocity_ = glm::vec3(0.0f);
       ball_->position_ = glm::vec3(0.0f, 0.0f, PADDLE_Z - 0.5f);
+      music_box_->SoundPlay(sounds_["lose"], 0);
+
     }
   }
 

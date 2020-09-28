@@ -97,7 +97,7 @@ INT MusicBox::SoundLoad(const char* file_path)
   }
 }
 
-void MusicBox::SoundPlay(INT sound_index)
+void MusicBox::SoundPlay(INT sound_index,int flag)
 {
   if(sound_index < 0 || sound_index > sounds_.size() - 1)
   {
@@ -107,7 +107,7 @@ void MusicBox::SoundPlay(INT sound_index)
   else
   {
     sounds_[sound_index]->SetCurrentPosition(0);
-    HRESULT hr = sounds_[sound_index]->Play(0, 0, 0); //last flag can be DSBPLAY_LOOPING :O
+    HRESULT hr = sounds_[sound_index]->Play(0, 0, flag); //last flag can be DSBPLAY_LOOPING :O
     if(FAILED(hr))
     {
       MessageBoxW(NULL, L"ERROR::MUSICBOX::PLAYSOUND::PLAY_ERROR", L"Error", MB_OK | MB_ICONERROR);

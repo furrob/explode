@@ -29,6 +29,6 @@ public:
   /// <returns></returns>
   INT SoundLoad(const char* file_path);
 
-  void SoundPlay(INT sound_index);
+  void SoundPlay(INT sound_index, int flag);
 };
 
