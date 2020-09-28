@@ -42,6 +42,10 @@ void Game::Initialize()
   sounds_["win"] = music_box_->SoundLoad("./sounds/win.raw");
   sounds_["lose"] = music_box_->SoundLoad("./sounds/lose.raw");
   sounds_["wall"] = music_box_->SoundLoad("./sounds/wall.raw");
+  sounds_["d1"] = music_box_->SoundLoad("./sounds/d1.raw");
+  sounds_["d2"] = music_box_->SoundLoad("./sounds/d2.raw");
+  sounds_["d3"] = music_box_->SoundLoad("./sounds/d3.raw");
+  sounds_["d4"] = music_box_->SoundLoad("./sounds/d4.raw");
 
   music_box_->SoundPlayBackground(sounds_["main_theme"]);
 
@@ -96,18 +100,26 @@ void Game::Update(double elapsed_time)
   if(((GetAsyncKeyState(0x31) & 0x8000) != 0) && !was_key_pressed_)
   {
     difficulty_ = 1.2f;
+
+    music_box_->SoundPlay(sounds_["d1"]);
   }
   else if(((GetAsyncKeyState(0x32) & 0x8000) != 0) && !was_key_pressed_)
   {
     difficulty_ = 1.0f;
+
+    music_box_->SoundPlay(sounds_["d2"]);
   }
   else if(((GetAsyncKeyState(0x33) & 0x8000) != 0) && !was_key_pressed_)
   {
     difficulty_ = 0.8f;
+
+    music_box_->SoundPlay(sounds_["d3"]);
   }
   else if(((GetAsyncKeyState(0x34) & 0x8000) != 0) && !was_key_pressed_)
   {
     difficulty_ = 0.6f;
+
+    music_box_->SoundPlay(sounds_["d4"]);
   }
   else
   {
