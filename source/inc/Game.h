@@ -49,10 +49,12 @@
 //Ball's z velocity gets multiplier by this value every time when ball gets bounced by enemy's paddle.
 #define Z_BOUNCE_VEL_MULTIPLIER 1.05f
 
-//After calculating paddle's velocity when bouncing the ball, 
+//After calculating paddle's velocity when bouncing the ball, set the ball acceleration in XY plane to be paddle
+//velocity divided by elapsed time and multiplied by minus that constant
 #define PADDLE_BALL_SPIN_ACC  0.0008f
 
-
+//Every frame, increase ball's acceleration by its current acceleration multiplied by this constant divided by elapsed time,
+//it can be called a jerk in physics terms.
 #define BALL_ACC_WINDUP 0.002f
 
 

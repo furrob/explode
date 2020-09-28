@@ -72,7 +72,7 @@ void main()
 
 	if(player_paddle)
 	{
-		fs_color = vec4(result, 0.5f);
+		fs_color = vec4(result, 0.8f);
 	}
 	else
 	{

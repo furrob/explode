@@ -36,9 +36,9 @@ Game::~Game()
 void Game::Initialize()
 {
   //ALL PATHS DEFINED HERE, maybe pull it somewhere else later idk
-  paddle_ = new Paddle("./models/paddle.obj", "./textures/texture.png");
+  paddle_ = new Paddle("./models/hand_paddle.obj", "./textures/hand_texture.png");
 
-  enemy_paddle_ = new Paddle("./models/paddle.obj", "./textures/texture.png");
+  enemy_paddle_ = new Paddle("./models/hand_paddle.obj", "./textures/hand_texture.png");
   enemy_paddle_->y_rotation_ = 180.0f;
   enemy_paddle_->set_position(glm::vec3(0.0f, 0.0f, BACK_WALL));
 
