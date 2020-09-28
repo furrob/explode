@@ -42,6 +42,7 @@ void Game::Initialize()
   enemy_paddle_->y_rotation_ = 180.0f;
 
   ball_ = new Ball("./models/ball.obj", "./textures/test.png");
+  ball_->position_ = glm::vec3(0.0f, 0.0f, PADDLE_Z - PADDLE_Z_HIT_MARGIN - BALL_RADIUS);
 
   walls_ = new Walls(PADDLE_Z, BACK_WALL, PADDLE_MAX_X, PADDLE_MAX_Y);
 
@@ -81,7 +82,7 @@ void Game::Update(double elapsed_time)
   ball_->velocity_.x += ball_->acceleration_.x * (float)elapsed_time;
   ball_->velocity_.y += ball_->acceleration_.y * (float)elapsed_time;
 
-  ball_->acceleration_ *= (BALL_ACC_WINDUP * elapsed_time);
+  ball_->acceleration_ += (ball_->acceleration_ * (float)(BALL_ACC_WINDUP * elapsed_time));
 
   //enemy paddle AI
   float x_pos = ball_->position_.x;
@@ -102,13 +103,13 @@ void Game::Update(double elapsed_time)
     //sound
     music_box_->SoundPlay(sounds_["pong"]);
 
-    ball_->velocity_.z = (ball_->velocity_.z) * -1.05f;
+    ball_->velocity_.z = (ball_->velocity_.z) * -Z_BOUNCE_VEL_MULTIPLIER;
     ball_->position_.z = BACK_WALL + BALL_RADIUS;
 
     //reset accel
     ball_->acceleration_ = glm::vec2(0.0f);
   }
-  else if(ball_->position_.z + BALL_RADIUS > PADDLE_Z) //if it reached paddle's depth <-- MARGIN INCLUDED
+  else if(ball_->position_.z + BALL_RADIUS > PADDLE_Z - PADDLE_Z_HIT_MARGIN) //if it reached paddle's depth <-- MARGIN INCLUDED
   {
     //check if it has hit the paddle (more-than-half-ball bounces are also valid)
     if(ball_->position_.x - BALL_RADIUS < paddle_->position_.x + paddle_->body_.right &&
@@ -123,25 +124,24 @@ void Game::Update(double elapsed_time)
       ball_->velocity_.z = -(ball_->velocity_.z);
 
       //calculate displacement between centers and modify ball velocity based on that displacement
-      glm::vec2 bounce_velocity = glm::vec2(ball_->position_.x - paddle_->position_.x,
-        ball_->position_.y - paddle_->position_.y) * (float)BOUNCE_DISPLACEMENT;
+     // glm::vec2 bounce_velocity = glm::vec2(ball_->position_.x - paddle_->position_.x,
+     //   ball_->position_.y - paddle_->position_.y) * (float)BOUNCE_DISPLACEMENT;
 
-      ball_->velocity_.x += bounce_velocity.x;
-      ball_->velocity_.y += bounce_velocity.y;
+      //ball_->velocity_.x += bounce_velocity.x;
+      //ball_->velocity_.y += bounce_velocity.y;
 
       //calculate paddle velocity
       glm::vec2 paddle_velocity = (glm::vec2(paddle_->position_.x, paddle_->position_.y) - last_paddle_position_) / ((float)elapsed_time);
 
-
-      ball_->velocity_.x += (paddle_velocity.x * PADDLE_VEL_MULTIPLIER);
-      ball_->velocity_.y += (paddle_velocity.y * PADDLE_VEL_MULTIPLIER);
+      //ball_->velocity_.x += (paddle_velocity.x * PADDLE_VEL_MULTIPLIER);
+      //ball_->velocity_.y += (paddle_velocity.y * PADDLE_VEL_MULTIPLIER);
 
       ball_->acceleration_ = (paddle_velocity/(float)elapsed_time) * -(float)PADDLE_BALL_SPIN_ACC;
 
 
-      ball_->position_.z = PADDLE_Z - BALL_RADIUS;
+      ball_->position_.z = PADDLE_Z - BALL_RADIUS - PADDLE_Z_HIT_MARGIN;
     }
-    else //no hit :(
+    else if(ball_->position_.z + BALL_RADIUS > PADDLE_Z)//last moment to hit the ball has passed :( :( :(
     {
       ball_->velocity_ = glm::vec3(0.0f);
       ball_->position_ = glm::vec3(0.0f, 0.0f, PADDLE_Z - 0.5f);
@@ -151,26 +151,26 @@ void Game::Update(double elapsed_time)
   //left side collision
   if(ball_->position_.x  - BALL_RADIUS < -PADDLE_MAX_X)
   {
-    ball_->velocity_.x = -(ball_->velocity_.x) * BOUNCE_DUMPING_FACTOR;
+    ball_->velocity_.x = -(ball_->velocity_.x) * BOUNCE_DAMPING_FACTOR;
     ball_->position_.x = -PADDLE_MAX_X + BALL_RADIUS;
   }
   //right side
   else if(ball_->position_.x + BALL_RADIUS > PADDLE_MAX_X)
   {
-    ball_->velocity_.x = -(ball_->velocity_.x) * BOUNCE_DUMPING_FACTOR;
+    ball_->velocity_.x = -(ball_->velocity_.x) * BOUNCE_DAMPING_FACTOR;
     ball_->position_.x = PADDLE_MAX_X - BALL_RADIUS;
   }
 
   //top collision
   if(ball_->position_.y + BALL_RADIUS > PADDLE_MAX_Y)
   {
-    ball_->velocity_.y = -(ball_->velocity_.y) * BOUNCE_DUMPING_FACTOR;
+    ball_->velocity_.y = -(ball_->velocity_.y) * BOUNCE_DAMPING_FACTOR;
     ball_->position_.y = PADDLE_MAX_Y - BALL_RADIUS;
   }
   //bottom collision
   else if(ball_->position_.y - BALL_RADIUS < -PADDLE_MAX_Y)
   {
-    ball_->velocity_.y = -(ball_->velocity_.y) * BOUNCE_DUMPING_FACTOR;
+    ball_->velocity_.y = -(ball_->velocity_.y) * BOUNCE_DAMPING_FACTOR;
     ball_->position_.y = -PADDLE_MAX_Y + BALL_RADIUS;
   }
   

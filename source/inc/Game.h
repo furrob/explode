@@ -5,7 +5,7 @@
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include<unordered_map>
+#include <unordered_map>
 
 #include "Paddle.h"
 #include "Ball.h"
@@ -21,7 +21,7 @@
 #define CAM_Z_FAR     1000.0f
 #define CAM_FOV       45.0f
 
-//movement
+//movement - play board (?) dimensions - macro names self explanatory
 #define PADDLE_Z      -5.0f
 #define PADDLE_MAX_X  4.0f
 #define PADDLE_MAX_Y  2.25f
@@ -30,14 +30,32 @@
 
 #define BACK_WALL -45.0f
 
-//bounce
-#define BOUNCE_DUMPING_FACTOR 0.65f
+//Margin in which ball-paddle collisions are checked, "spatial window" when player can bounce the ball.
+//If paddle is not present during ball's journey through this region of Z coords and ball reaches PADDLE_Z,
+//bounce fails.
+#define PADDLE_Z_HIT_MARGIN 0.2f
 
-#define BOUNCE_DISPLACEMENT 0.0f
-#define PADDLE_VEL_MULTIPLIER 0.0f
-#define PADDLE_BALL_SPIN_ACC  0.5f
+//Every time ball hits a wall, velocity component in direction perpendicular to plane hit gets multiplied
+//by this factor (XY plane excluded - z velocity is not affected by this factor).
+#define BOUNCE_DAMPING_FACTOR 0.65f
 
-#define BALL_ACC_WINDUP 30.0f
+//Displacement of ball and paddle centers on ball-paddle hits is multiplied by this factor and applied
+//to ball as its velocity in XY plane.
+#define BOUNCE_DISPLACEMENT 0.0f //USELESS XDD
+
+
+#define PADDLE_VEL_MULTIPLIER 0.0f //USELESS XDD
+
+//Ball's z velocity gets multiplier by this value every time when ball gets bounced by enemy's paddle.
+#define Z_BOUNCE_VEL_MULTIPLIER 1.05f
+
+//After calculating paddle's velocity when bouncing the ball, 
+#define PADDLE_BALL_SPIN_ACC  0.0008f
+
+
+#define BALL_ACC_WINDUP 0.002f
+
+
 
 typedef std::unordered_map<const char*, int> SoundsLib;
 
