@@ -56,13 +56,19 @@ Ball::Ball(const char* meshPath, const char* texturePath) : mesh_(OBJLoader::loa
 
 void Ball::Update(double elapsed_time)
 {
-  //position_ += (float)elapsed_time * velocity_;
-  //velocity_ += (float)elapsed_time * acceleration_;
-  //acceleration_ *= 0.1f; //dumping
+  if(glm::length(acceleration_) > 0) //TODO
+  {
+    rotation_axis_ = glm::normalize(glm::vec3(acceleration_.y, -acceleration_.x, 0.0f));
+    rotation_speed_ = glm::length(acceleration_) * BALL_ROTATION_ANGLE_MULTIPLIER;
+  }
 
-  model_matrix_ = glm::identity<glm::mat4>();
-  model_matrix_ = glm::translate(model_matrix_, position_);
-  //model_matrix_ = glm::scale(model_matrix_, scale_);
+  rotation_angle_ += rotation_speed_ * elapsed_time;
+
+  //model_matrix_ = glm::mat4(1.0f);
+
+  model_matrix_ = glm::translate(glm::mat4(1.0f), position_);
+  
+  model_matrix_ = glm::rotate(model_matrix_, glm::radians(rotation_angle_), rotation_axis_);
 }
 
 void Ball::Draw(Shader* shader)

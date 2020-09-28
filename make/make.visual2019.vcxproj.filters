@@ -49,6 +49,9 @@
     <ClInclude Include="..\source\inc\MusicBox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\inc\resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\src\main.cpp">
@@ -95,5 +98,15 @@
     <None Include="..\source\shaders\vertex_ball.glsl">
       <Filter>Shaders</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="explode_game.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\source\icon.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

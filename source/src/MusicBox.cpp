@@ -97,10 +97,6 @@ INT MusicBox::SoundLoad(const char* file_path)
   }
 }
 
-INT MusicBox::SoundLoadBackground(const char* file_path)
-{
-  return NULL;
-}
 
 void MusicBox::SoundPlay(INT sound_index)
 {
@@ -113,6 +109,25 @@ void MusicBox::SoundPlay(INT sound_index)
   {
     sounds_[sound_index]->SetCurrentPosition(0);
     HRESULT hr = sounds_[sound_index]->Play(0, 0, 0); //last flag can be DSBPLAY_LOOPING :O
+    if(FAILED(hr))
+    {
+      MessageBoxW(NULL, L"ERROR::MUSICBOX::PLAYSOUND::PLAY_ERROR", L"Error", MB_OK | MB_ICONERROR);
+    }
+  }
+}
+
+void MusicBox::SoundPlayBackground(INT sound_index)
+{
+  if(sound_index < 0 || sound_index > sounds_.size() - 1)
+  {
+    //incorrect index
+    MessageBoxW(NULL, L"ERROR::MUSICBOX::PLAYSOUND::INVALID_INDEX", L"Error", MB_OK | MB_ICONERROR);
+  }
+  else
+  {
+    sounds_[sound_index]->SetVolume(-1800);
+    sounds_[sound_index]->SetCurrentPosition(0);
+    HRESULT hr = sounds_[sound_index]->Play(0, 0, DSBPLAY_LOOPING); //last flag can be DSBPLAY_LOOPING :O
     if(FAILED(hr))
     {
       MessageBoxW(NULL, L"ERROR::MUSICBOX::PLAYSOUND::PLAY_ERROR", L"Error", MB_OK | MB_ICONERROR);

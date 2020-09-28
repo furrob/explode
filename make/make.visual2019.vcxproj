@@ -166,6 +166,7 @@
     <ClInclude Include="..\source\inc\MusicBox.h" />
     <ClInclude Include="..\source\inc\OBJLoader.h" />
     <ClInclude Include="..\source\inc\Paddle.h" />
+    <ClInclude Include="..\source\inc\resource.h" />
     <ClInclude Include="..\source\inc\Shader.h" />
     <ClInclude Include="..\source\inc\vertex.h" />
     <ClInclude Include="..\source\inc\Walls.h" />
@@ -187,6 +188,12 @@
     <None Include="..\source\shaders\fragment_ball.glsl" />
     <None Include="..\source\shaders\vertex.glsl" />
     <None Include="..\source\shaders\vertex_ball.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="explode_game.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\source\icon.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

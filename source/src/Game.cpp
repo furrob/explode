@@ -1,7 +1,7 @@
 #include "Game.h"
 
 
-Game::Game(HWND hWnd, int width, int height, HDC hDC) : shader_("../../source/shaders/vertex.glsl", "../../source/shaders/fragment.glsl")
+Game::Game(HWND hWnd, int width, int height, HDC hDC) : shader_(SHADER_VERTEX_PATH, SHADER_FRAGMENT_PATH)
 {
   hWnd_ = hWnd;
   hDC_ = hDC;
@@ -35,22 +35,29 @@ Game::~Game()
 
 void Game::Initialize()
 {
-  //ALL PATHS DEFINED HERE, maybe pull it somewhere else later idk
-  paddle_ = new Paddle("./models/hand_paddle.obj", "./textures/hand_texture.png");
+  music_box_ = new MusicBox(hWnd_);
+  //load sounds
+  sounds_["main_theme"] = music_box_->SoundLoad("./sounds/main_theme.raw");
+  sounds_["pong"] = music_box_->SoundLoad("./sounds/pong.raw");
+  sounds_["win"] = music_box_->SoundLoad("./sounds/win.raw");
+  sounds_["lose"] = music_box_->SoundLoad("./sounds/lose.raw");
+  sounds_["wall"] = music_box_->SoundLoad("./sounds/wall.raw");
 
-  enemy_paddle_ = new Paddle("./models/hand_paddle.obj", "./textures/hand_texture.png");
+  music_box_->SoundPlayBackground(sounds_["main_theme"]);
+
+
+  //ALL PATHS DEFINED HERE, maybe pull it somewhere else later idk
+  paddle_ = new Paddle("./models/hand_paddle.obj", "./textures/hand.png");
+
+  enemy_paddle_ = new Paddle("./models/hand_paddle.obj", "./textures/hand.png");
   enemy_paddle_->y_rotation_ = 180.0f;
   enemy_paddle_->set_position(glm::vec3(0.0f, 0.0f, BACK_WALL));
 
-  ball_ = new Ball("./models/ball.obj", "./textures/test.png");
+  ball_ = new Ball("./models/grenade_ball.obj", "./textures/grenade.png");
   ball_->position_ = glm::vec3(0.0f, 0.0f, PADDLE_Z - PADDLE_Z_HIT_MARGIN - BALL_RADIUS);
 
-  walls_ = new Walls(PADDLE_Z, BACK_WALL, PADDLE_MAX_X, PADDLE_MAX_Y);
+  walls_ = new Walls(PADDLE_Z, BACK_WALL, PADDLE_MAX_X, PADDLE_MAX_Y, "./textures/wall.jpg");
 
-  music_box_ = new MusicBox(hWnd_);
-  //load sounds
-  //sound_pong_ = music_box_->SoundLoad("./sounds/pong.raw");
-  sounds_["pong"] = music_box_->SoundLoad("./sounds/pong.raw");
 }
 
 void Game::OnMouseMove(int _x, int _y)
@@ -73,10 +80,41 @@ void Game::OnMouseMove(int _x, int _y)
 
 void Game::Update(double elapsed_time)
 {
-  if((GetAsyncKeyState(VK_TAB) & 0x8000) != 0)
+  if((GetAsyncKeyState(VK_SPACE) & 0x8000) != 0)
   {
-    ball_->velocity_ = glm::vec3(0.0f, 0.0f, -20.0f);
+    if(!started_ &&
+      ball_->position_.x - BALL_RADIUS < paddle_->position_.x + paddle_->body_.right &&
+      ball_->position_.x + BALL_RADIUS > paddle_->position_.x - paddle_->body_.left &&
+      ball_->position_.y - BALL_RADIUS < paddle_->position_.y + paddle_->body_.top &&
+      ball_->position_.y + BALL_RADIUS > paddle_->position_.y - paddle_->body_.bottom)
+    {
+      ball_->velocity_ = glm::vec3(-(paddle_->position_.x),-(paddle_->position_.y), -20.0f);
+      started_ = true;
+    }
   }
+
+  if(((GetAsyncKeyState(0x31) & 0x8000) != 0) && !was_key_pressed_)
+  {
+    difficulty_ = 1.2f;
+  }
+  else if(((GetAsyncKeyState(0x32) & 0x8000) != 0) && !was_key_pressed_)
+  {
+    difficulty_ = 1.0f;
+  }
+  else if(((GetAsyncKeyState(0x33) & 0x8000) != 0) && !was_key_pressed_)
+  {
+    difficulty_ = 0.8f;
+  }
+  else if(((GetAsyncKeyState(0x34) & 0x8000) != 0) && !was_key_pressed_)
+  {
+    difficulty_ = 0.6f;
+  }
+  else
+  {
+    was_key_pressed_ = false;
+  }
+
+
 
   //update ball position, velocity etc.
   ball_->position_ += ball_->velocity_ * (float)elapsed_time;
@@ -85,24 +123,24 @@ void Game::Update(double elapsed_time)
 
   ball_->acceleration_ += (ball_->acceleration_ * (float)(BALL_ACC_WINDUP * elapsed_time));
 
+  ball_->Update(elapsed_time);
   //enemy paddle AI ______________________________________________________________________________________________________________________Warning
-  float x_pos= ball_->position_.x;
-  float y_pos= ball_->position_.y;
+  //float x_pos= ball_->position_.x;
+  //float y_pos= ball_->position_.y;
   //float speed_factor=5;
-  float difficulty=1.2; //between 0 and 1.8
-  float nearBonus;
-  if (ball_->position_.z <= -25*difficulty) //_________________________________________________________________________________________Enemy paddle activates after ball reaches -25 z
+
+  if(ball_->position_.z <= -25 * difficulty_) //________________________________________________________Enemy paddle activates after ball reaches -25 z
   {
-      nearBonus = (( ball_->position_.z/ BACK_WALL )*1.8)/(difficulty+0.01);
-      float x = (ball_->position_.x - enemy_paddle_->position_.x) * 2.2 * (float)elapsed_time*nearBonus;
-     // x = (abs(x) <= speed_factor * (float)elapsed_time) ? (x <= 0) ? -speed_factor * (float)elapsed_time : speed_factor * (float)elapsed_time : x;
-      x_pos = enemy_paddle_->position_.x + x;
-    
-    
-      float y = (ball_->position_.y - enemy_paddle_->position_.y) * 2.2 * (float)elapsed_time* nearBonus;
-      //y = (abs(y) <= speed_factor * (float)elapsed_time) ? (y <= 0) ? -speed_factor * (float)elapsed_time : speed_factor * (float)elapsed_time : y;
-      y_pos = enemy_paddle_->position_.y + y;
-    
+    float nearBonus = ((ball_->position_.z / (float)BACK_WALL) * 1.8f) / (difficulty_ + 0.01f);
+    float x = (ball_->position_.x - enemy_paddle_->position_.x) * 2.2f * (float)elapsed_time * nearBonus;
+    // x = (abs(x) <= speed_factor * (float)elapsed_time) ? (x <= 0) ? -speed_factor * (float)elapsed_time : speed_factor * (float)elapsed_time : x;
+    float x_pos = enemy_paddle_->position_.x + x;
+
+
+    float y = (ball_->position_.y - enemy_paddle_->position_.y) * 2.2f * (float)elapsed_time * nearBonus;
+    //y = (abs(y) <= speed_factor * (float)elapsed_time) ? (y <= 0) ? -speed_factor * (float)elapsed_time : speed_factor * (float)elapsed_time : y;
+    float y_pos = enemy_paddle_->position_.y + y;
+
 
     x_pos = (x_pos + enemy_paddle_->body_.right > PADDLE_MAX_X) ? PADDLE_MAX_X - enemy_paddle_->body_.right : x_pos;
     x_pos = (x_pos - enemy_paddle_->body_.left < -PADDLE_MAX_X) ? -PADDLE_MAX_X + enemy_paddle_->body_.right : x_pos;
@@ -110,9 +148,9 @@ void Game::Update(double elapsed_time)
     y_pos = (y_pos - enemy_paddle_->body_.bottom < -PADDLE_MAX_Y) ? -PADDLE_MAX_Y + enemy_paddle_->body_.bottom : y_pos;
     enemy_paddle_->set_position(glm::vec3(x_pos, y_pos, BACK_WALL));
   }
-  //_________________________________________________________________________________________//_________________________________________________________________________________________AI END
+  //______________________________________________________________________________//___________________________________________________________________________AI END
   //update ball matrices
-  ball_->model_matrix_ = glm::translate(glm::mat4(1.0f), ball_->position_);
+  //ball_->model_matrix_ = glm::translate(glm::mat4(1.0f), ball_->position_);
 
   //check if ball reached back wall
   if(ball_->position_.z - BALL_RADIUS < BACK_WALL)
@@ -127,14 +165,23 @@ void Game::Update(double elapsed_time)
       //sound
       music_box_->SoundPlay(sounds_["pong"]);
 
+      glm::vec2 paddle_velocity = (glm::vec2(enemy_paddle_->position_.x, enemy_paddle_->position_.y) - last_enemy_paddle_position_) / ((float)elapsed_time);
+
+      ball_->acceleration_ = (paddle_velocity / (float)elapsed_time) * -(float)PADDLE_BALL_SPIN_ACC;
+
+      
+
       ball_->velocity_.z = (ball_->velocity_.z) * -Z_BOUNCE_VEL_MULTIPLIER;
       ball_->position_.z = BACK_WALL + BALL_RADIUS;
     }
     else
     {
-      //NO HIT
+      //AI NO HIT
       ball_->velocity_ = glm::vec3(0.0f);
       ball_->position_ = glm::vec3(0.0f, 0.0f, PADDLE_Z - 0.5f);
+      enemy_paddle_->set_position(glm::vec3(0.0f, 0.0f, BACK_WALL));
+      music_box_->SoundPlay(sounds_["win"]);
+      started_ = false;
     }
 
     //reset accel
@@ -176,6 +223,9 @@ void Game::Update(double elapsed_time)
     {
       ball_->velocity_ = glm::vec3(0.0f);
       ball_->position_ = glm::vec3(0.0f, 0.0f, PADDLE_Z - 0.5f);
+      enemy_paddle_->set_position(glm::vec3(0.0f, 0.0f, BACK_WALL));
+      music_box_->SoundPlay(sounds_["lose"]);
+      started_ = false;
     }
   }
 
@@ -184,12 +234,18 @@ void Game::Update(double elapsed_time)
   {
     ball_->velocity_.x = -(ball_->velocity_.x) * BOUNCE_DAMPING_FACTOR;
     ball_->position_.x = -PADDLE_MAX_X + BALL_RADIUS;
+
+    ball_->acceleration_.x *= WALL_BOUNCE_ACC_DAMPING;
+    music_box_->SoundPlay(sounds_["wall"]);
   }
   //right side
   else if(ball_->position_.x + BALL_RADIUS > PADDLE_MAX_X)
   {
     ball_->velocity_.x = -(ball_->velocity_.x) * BOUNCE_DAMPING_FACTOR;
     ball_->position_.x = PADDLE_MAX_X - BALL_RADIUS;
+
+    ball_->acceleration_.x *= WALL_BOUNCE_ACC_DAMPING;
+    music_box_->SoundPlay(sounds_["wall"]);
   }
 
   //top collision
@@ -197,25 +253,33 @@ void Game::Update(double elapsed_time)
   {
     ball_->velocity_.y = -(ball_->velocity_.y) * BOUNCE_DAMPING_FACTOR;
     ball_->position_.y = PADDLE_MAX_Y - BALL_RADIUS;
+
+    ball_->acceleration_.y *= WALL_BOUNCE_ACC_DAMPING;
+    music_box_->SoundPlay(sounds_["wall"]);
   }
   //bottom collision
   else if(ball_->position_.y - BALL_RADIUS < -PADDLE_MAX_Y)
   {
     ball_->velocity_.y = -(ball_->velocity_.y) * BOUNCE_DAMPING_FACTOR;
     ball_->position_.y = -PADDLE_MAX_Y + BALL_RADIUS;
+
+    ball_->acceleration_.y *= WALL_BOUNCE_ACC_DAMPING;
+    music_box_->SoundPlay(sounds_["wall"]);
   }
   
   
-
+  ball_->Update(elapsed_time);
   //save paddle position to use it in next frame
   last_paddle_position_ = glm::vec2(paddle_->position_.x, paddle_->position_.y);
+
+  last_enemy_paddle_position_ = glm::vec2(enemy_paddle_->position_.x, enemy_paddle_->position_.y);
 }
 
 void Game::RenderScene()
 {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  glClearColor(0.2f, 0.1f, 0.15f, 0.0f);
+  glClearColor(0.1f, 0.15f, 0.3f, 0.0f);
 
   //set up shader uniforms
 
@@ -226,9 +290,9 @@ void Game::RenderScene()
   shader_.setUniform("light_pos", ball_->position_);
 
   //walls
-  shader_.setUniform("walls", true);
+  //shader_.setUniform("walls", true);
   walls_->Draw(&shader_);
-  shader_.setUniform("walls", false);
+  //shader_.setUniform("walls", false);
 
   //enemy paddle
   enemy_paddle_->Draw(&shader_);

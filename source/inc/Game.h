@@ -13,6 +13,15 @@
 #include "MusicBox.h"
 #include "Walls.h"
 
+
+#ifdef _DEBUG
+#define SHADER_VERTEX_PATH "../../source/shaders/vertex.glsl"
+#define SHADER_FRAGMENT_PATH "../../source/shaders/fragment.glsl"
+#else
+#define SHADER_VERTEX_PATH "./shaders/vertex.glsl"
+#define SHADER_FRAGMENT_PATH "./shaders/fragment.glsl"
+#endif
+
 //play volume dimension constants
 //play area dimensions ->
 //far xy plane 55
@@ -29,6 +38,8 @@
 #define BALL_RADIUS 0.2f
 
 #define BACK_WALL -45.0f
+
+#define AI_REACTION_Z BACK_WALL/2.0f
 
 //Margin in which ball-paddle collisions are checked, "spatial window" when player can bounce the ball.
 //If paddle is not present during ball's journey through this region of Z coords and ball reaches PADDLE_Z,
@@ -55,9 +66,10 @@
 
 //Every frame, increase ball's acceleration by its current acceleration multiplied by this constant divided by elapsed time,
 //it can be called a jerk in physics terms.
-#define BALL_ACC_WINDUP 0.002f
+#define BALL_ACC_WINDUP 0.006f
 
-
+//ffff
+#define WALL_BOUNCE_ACC_DAMPING 0.5f
 
 typedef std::unordered_map<const char*, int> SoundsLib;
 
@@ -90,6 +102,13 @@ private:
 
   //paddle position from last frame to calculate paddle
   glm::vec2 last_paddle_position_ = glm::vec2(0.0f);
+  glm::vec2 last_enemy_paddle_position_ = glm::vec2(0.0f);
+
+  bool started_ = false;
+
+  bool was_key_pressed_;
+
+  float difficulty_ = 1.0f; //between 0 and 1.8
 
 public:
   Game(HWND hWnd, int width, int height, HDC hDC);

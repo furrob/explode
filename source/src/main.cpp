@@ -4,9 +4,11 @@
 #include "OBJLoader.h"
 #include <string>
 
+#include "resource.h"
+
 BOOL Create(HWND* hWnd, LPCWSTR ClassName, PCWSTR lpWindowName, DWORD dwStyle, DWORD dwExStyle = 0,
-  int x = CW_USEDEFAULT, int y = CW_USEDEFAULT, int nWidth = CW_USEDEFAULT, int nHeight = CW_USEDEFAULT,
-  HWND hWndParent = 0, HMENU hMenu = 0);
+            int x = CW_USEDEFAULT, int y = CW_USEDEFAULT, int nWidth = CW_USEDEFAULT, int nHeight = CW_USEDEFAULT,
+            HWND hWndParent = 0, HMENU hMenu = 0);
 
 
 INT_PTR CALLBACK WindowProc(HWND, UINT, WPARAM, LPARAM);
@@ -36,11 +38,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   GetClientRect(hWnd, &rc);
   Game game(hWnd, rc.right - rc.left, rc.bottom - rc.top, hDC);
   game.Initialize();
-
+  ShowCursor(FALSE);
+  ClipCursor(&rc);
 
   SendMessageW(hWnd, WM_USER, NULL, (LPARAM)&game);
-
-  ///ClipCursor(&rc); //TODO this
 
   //OpenGL options?
   glEnable(GL_DEPTH_TEST);
@@ -133,6 +134,12 @@ INT_PTR CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
   switch(uMsg)
   {
+    case WM_CREATE:
+    {
+      HICON hIcon = LoadIconW(GetModuleHandleW(NULL), MAKEINTRESOURCE(IDI_ICON1));
+      SendMessageW(hWnd, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
+      return TRUE;
+    }
     case WM_USER:
     {
       game = reinterpret_cast<Game*>(lParam);
@@ -148,7 +155,7 @@ INT_PTR CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
           PostQuitMessage(0);
           return TRUE;
         }
-        case 0x31: //1 key
+        case VK_F1: //1 key
         {
           if(cursor_hidden == FALSE)
           {
@@ -157,7 +164,7 @@ INT_PTR CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
           }
           return TRUE;
         }
-        case 0x32: //2 key
+        case VK_F2: //2 key
         {
           if(cursor_hidden == TRUE)
           {
@@ -166,14 +173,14 @@ INT_PTR CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
           }
           return TRUE;
         }
-        case 0x33: //3 key
+        case VK_F3: //3 key
         {
           RECT rc;
           GetClientRect(hWnd, &rc);
           ClipCursor(&rc);
           return TRUE;
         }
-        case 0x34: //4 key
+        case VK_F4: //4 key
         {
           ClipCursor(NULL);
           return TRUE;

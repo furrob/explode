@@ -13,7 +13,8 @@
 #include "Mesh.h"
 #include "OBJLoader.h"
 
-
+#define BALL_ROTATION_ANGLE_MULTIPLIER 90.0f
+#define BALL_ROTATION_NO_ACCELERATION 30.0f
 
 class Ball
 {
@@ -28,6 +29,10 @@ public:
   glm::mat4 model_matrix_;
 
   glm::vec3 scale_;
+
+  glm::vec3 rotation_axis_ = glm::vec3(0.0f, 1.0f, 0.0f);
+  float rotation_speed_ = 0.0f;
+  float rotation_angle_ = 0.0f;
 
   glm::vec3 position_; //position of this thing
 
